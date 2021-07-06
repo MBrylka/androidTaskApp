@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.text.Layout;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskapp.R;
+import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
 import com.example.taskapp.feedEntries.TaskContract;
 import com.example.taskapp.models.TaskModel;
@@ -30,6 +34,7 @@ public class DashboardFragment extends Fragment {
     private View root;
     private DashboardViewModel dashboardViewModel;
     private LinearLayout dashboard_linearLayout;
+    private RecyclerView dashboard_recyclerView;
 
     private TaskDbHelper taskDbHelper;
     private SQLiteDatabase writableDatabase;
@@ -43,18 +48,30 @@ public class DashboardFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         initializeComponents();
+        initDatabase();
 
-        taskDbHelper = new TaskDbHelper(getContext());
-        writableDatabase = taskDbHelper.getWritableDatabase();
+        initializeRecyclerView();
 
         loadAllTasks();
-        createTaskUI();
+
+        TaskAdapter taskAdapter = new TaskAdapter(tasks);
+        dashboard_recyclerView.setAdapter(taskAdapter);
+        dashboard_recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return root;
+    }
+
+    private void initializeRecyclerView() {
+
+    }
+
+    private void initDatabase() {
+        taskDbHelper = new TaskDbHelper(getContext());
+        writableDatabase = taskDbHelper.getWritableDatabase();
     }
 
 
     private void initializeComponents() {
-        dashboard_linearLayout = root.findViewById(R.id.dashboard_linearLayout);
+        dashboard_recyclerView = root.findViewById(R.id.dashboard_recyclerView);
     }
 
     private void loadAllTasks() {
@@ -76,7 +93,7 @@ public class DashboardFragment extends Fragment {
                 sortOrder
         );
 
-        while(cursor.moveToNext()) {
+        while (cursor.moveToNext()) {
             String taskName = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
             String taskDate = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE));
             String taskTime = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME));
@@ -84,21 +101,4 @@ public class DashboardFragment extends Fragment {
         }
         cursor.close();
     }
-
-    private void createTaskUI() {
-        for(TaskModel task: tasks) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View dashboardRecord = inflater.inflate(R.layout.dashboard_record, null);
-            TextView textView1 = dashboardRecord.findViewById(R.id.dashboard_item_taskName);
-            TextView textView2 = dashboardRecord.findViewById(R.id.dashboard_item_taskDate);
-            TextView textView3 = dashboardRecord.findViewById(R.id.dashboard_item_taskTime);
-
-            textView1.setText(task.taskName);
-            textView2.setText(task.taskDate);
-            textView3.setText(task.taskTime);
-
-            dashboard_linearLayout.addView(dashboardRecord);
-        }
-    }
-
 }
