@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">najbliższe zadania</string>
+    <string name="dash_title">Wszystkie zadania</string>
+    <string name="add_title">Dodaj nowe zadanie</string>
+
+    <string name="add_taskName">Nazwa zadania</string>
+    <string name="add_date">Data</string>
+    <string name="add_time">Godzina</string>
+    <string name="add_button">Dodaj</string>
+
+    <string name="add_promptOnAdd">Czy chcesz dodać to zdarzenie?</string>
+    <string name="add_promptOnAddYes">Tak</string>
+    <string name="add_promptOnAddNo">Nie</string>
+</resources>
