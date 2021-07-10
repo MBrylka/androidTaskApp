@@ -3,9 +3,10 @@ package com.example.taskapp.models;
 import java.sql.Date;
 
 public class TaskModel {
-    public String taskName;
-    public String taskDate;
-    public String taskTime;
+    private int id;
+    private String taskName;
+    private String taskDate;
+    private String taskTime;
     public int notificationType;
     public boolean notify;
 
