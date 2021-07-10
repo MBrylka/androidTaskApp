@@ -18,6 +18,7 @@ import com.example.taskapp.R;
 import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.callbacks.TaskSwipeDeleteCallback;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
+import com.example.taskapp.enums.NotificationTypeEnum;
 import com.example.taskapp.feedEntries.TaskContract;
 import com.example.taskapp.models.TaskModel;
 
@@ -75,7 +76,9 @@ public class DashboardFragment extends Fragment {
                 BaseColumns._ID,
                 TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME,
                 TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE,
-                TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME
+                TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME,
+                TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE,
+                TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY
         };
 
         String sortOrder = TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE + " DESC";
@@ -96,7 +99,7 @@ public class DashboardFragment extends Fragment {
             String taskTime = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME));
             int notificationType = cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE));
             boolean notify = 1 == cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY));
-            tasks.add(new TaskModel(id, taskName, taskDate, taskTime, notificationType, notify));
+            tasks.add(new TaskModel(id, taskName, taskDate, taskTime, NotificationTypeEnum.MIN30, notify));
         }
         cursor.close();
     }

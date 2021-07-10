@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.taskapp.R;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
+import com.example.taskapp.enums.NotificationTypeEnum;
 import com.example.taskapp.feedEntries.TaskContract;
 
 import java.sql.Time;
@@ -32,12 +33,15 @@ public class AddFragment extends Fragment {
     private EditText input_taskName;
     private EditText input_taskTime;
     private CalendarView input_taskDate;
+    private Switch switch_addNotify;
+    private RadioGroup radioGroup_addNotificationType;
     private Button btn_add;
 
     private TaskDbHelper taskDbHelper;
     private SQLiteDatabase writableDatabase;
 
     private Calendar input_selectedDate;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class AddFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_add, container, false);
 
         initializeComponents();
+        addRadioButtons();
         setListeners();
 
         taskDbHelper = new TaskDbHelper(getContext());
@@ -54,11 +59,23 @@ public class AddFragment extends Fragment {
         return root;
     }
 
+    private void addRadioButtons() {
+        for(NotificationTypeEnum type : NotificationTypeEnum.values()) {
+            RadioButton rb = new RadioButton(root.getContext());
+            //rb.setEnabled(false);
+            rb.setText(type.toString());
+            radioGroup_addNotificationType.addView(rb);
+        }
+    }
+
     private void initializeComponents() {
-        btn_add = (Button) root.findViewById(R.id.btn_add);
-        input_taskName = (EditText) root.findViewById(R.id.input_taskName);
-        input_taskDate = (CalendarView) root.findViewById(R.id.calendar_taskDate);
+        btn_add = root.findViewById(R.id.btn_add);
+        input_taskName = root.findViewById(R.id.input_taskName);
+        input_taskDate = root.findViewById(R.id.calendar_taskDate);
         input_taskTime = root.findViewById(R.id.input_taskTime);
+        switch_addNotify = root.findViewById(R.id.switch_addNotify);
+        radioGroup_addNotificationType = root.findViewById(R.id.radioGroup_addNotificationType);
+
     }
 
     private void setListeners() {
@@ -156,6 +173,8 @@ public class AddFragment extends Fragment {
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME, taskName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE, datetime.toString());
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time.toString());
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, 0);
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY, 0);
 
         long newRowId = writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
         Toast toast = Toast.makeText(getActivity(), "Dodano nowe zadanie.", Toast.LENGTH_SHORT);

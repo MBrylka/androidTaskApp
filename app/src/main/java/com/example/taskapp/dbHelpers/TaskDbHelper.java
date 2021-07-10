@@ -7,14 +7,16 @@ import com.example.taskapp.feedEntries.TaskContract.TaskEntry;
 
 public class TaskDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "taskModel.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TaskEntry.TABLE_NAME + " (" +
                     TaskEntry._ID + " INTEGER PRIMARY KEY," +
                     TaskEntry.COLUMN_NAME_TASK_NAME + " TEXT," +
                     TaskEntry.COLUMN_NAME_TASK_DATE + " DATE," +
-                    TaskEntry.COLUMN_NAME_TASK_TIME + " TIME)";
+                    TaskEntry.COLUMN_NAME_TASK_TIME + " TIME,"+
+                    TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE + " INT,"+
+                    TaskEntry.COLUMN_NAME_TASK_NOTIFY + " INT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;

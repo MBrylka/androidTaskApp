@@ -1,5 +1,7 @@
 package com.example.taskapp.models;
 
+import com.example.taskapp.enums.NotificationTypeEnum;
+
 import java.sql.Date;
 
 public class TaskModel {
@@ -7,17 +9,10 @@ public class TaskModel {
     private String taskName;
     private String taskDate;
     private String taskTime;
-    private int notificationType;
+    private NotificationTypeEnum notificationType;
     private boolean notify;
 
-    private enum NotificationTypeEnum {
-        MIN15,
-        MIN30,
-        HOUR1,
-        DAY1;
-    }
-
-    public TaskModel(int id, String taskName, String taskDate, String taskTime, int notificationType, boolean notify) {
+    public TaskModel(int id, String taskName, String taskDate, String taskTime, NotificationTypeEnum notificationType, boolean notify) {
         this.id = id;
         this.taskName = taskName;
         this.taskDate = taskDate;

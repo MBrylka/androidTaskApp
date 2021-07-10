@@ -123,14 +123,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         String taskName = recentlyDeletedItem.getTaskName();
         String date = recentlyDeletedItem.getTaskDate();
         String time = recentlyDeletedItem.getTaskTime();
+        //TODO notify
 
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME, taskName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE, date);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time);
+        //TODO notify
 
         writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
-
 
         tasksDataSet.add(recentlyDeletedPosition, recentlyDeletedItem);
         notifyItemInserted(recentlyDeletedPosition);
