@@ -10,5 +10,7 @@ public final class TaskContract {
         public static final String COLUMN_NAME_TASK_NAME = "taskName";
         public static final String COLUMN_NAME_TASK_DATE = "taskDate";
         public static final String COLUMN_NAME_TASK_TIME = "taskTime";
+        public static final String COLUMN_NAME_TASK_NOTIFICATION_TYPE = "notificationType";
+        public static final String COLUMN_NAME_TASK_NOTIFY = "notify";
     }
 }

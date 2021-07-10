@@ -94,7 +94,9 @@ public class DashboardFragment extends Fragment {
             String taskName = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
             String taskDate = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE));
             String taskTime = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME));
-            tasks.add(new TaskModel(id, taskName, taskDate, taskTime));
+            int notificationType = cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE));
+            boolean notify = 1 == cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY));
+            tasks.add(new TaskModel(id, taskName, taskDate, taskTime, notificationType, notify));
         }
         cursor.close();
     }

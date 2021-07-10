@@ -7,8 +7,8 @@ public class TaskModel {
     private String taskName;
     private String taskDate;
     private String taskTime;
-    public int notificationType;
-    public boolean notify;
+    private int notificationType;
+    private boolean notify;
 
     private enum NotificationTypeEnum {
         MIN15,
@@ -17,11 +17,13 @@ public class TaskModel {
         DAY1;
     }
 
-    public TaskModel(int id, String taskName, String taskDate, String taskTime) {
+    public TaskModel(int id, String taskName, String taskDate, String taskTime, int notificationType, boolean notify) {
         this.id = id;
         this.taskName = taskName;
         this.taskDate = taskDate;
         this.taskTime = taskTime;
+        this.notificationType = notificationType;
+        this.notify = notify;
     }
 
     public int getId() {
