@@ -36,4 +36,12 @@ public class TaskModel {
     public String getTaskTime() {
         return taskTime;
     }
+
+    public NotificationTypeEnum getNotificationType() {
+        return notificationType;
+    }
+
+    public boolean getNotify() {
+        return notify;
+    }
 }

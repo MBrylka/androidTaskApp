@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskapp.R;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
+import com.example.taskapp.enums.NotificationTypeEnum;
 import com.example.taskapp.feedEntries.TaskContract;
 import com.example.taskapp.models.TaskModel;
 import com.google.android.material.snackbar.Snackbar;
@@ -114,7 +115,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         writableDatabase.delete(tableName, whereClause, null);
 
         Log.d("remove from db", recentlyDeletedItem.toString());
-        Toast toast = Toast.makeText(recyclerView.getContext(), "Usunięto zadanie.", 1000);
+        Toast toast = Toast.makeText(recyclerView.getContext(), R.string.taskAdapter_removedToast, 1000);
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }
@@ -123,19 +124,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         String taskName = recentlyDeletedItem.getTaskName();
         String date = recentlyDeletedItem.getTaskDate();
         String time = recentlyDeletedItem.getTaskTime();
-        //TODO notify
+        NotificationTypeEnum notificationType = recentlyDeletedItem.getNotificationType();
+        boolean notify = recentlyDeletedItem.getNotify();
 
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME, taskName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE, date);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time);
-        //TODO notify
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, notificationType.ordinal());
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY, notify);
 
         writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
 
         tasksDataSet.add(recentlyDeletedPosition, recentlyDeletedItem);
         notifyItemInserted(recentlyDeletedPosition);
-        Toast toast = Toast.makeText(recyclerView.getContext(), "Przywrócono zadanie.", 1000);
+        Toast toast = Toast.makeText(recyclerView.getContext(), R.string.taskAdapter_undoToast, 1000);
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }
