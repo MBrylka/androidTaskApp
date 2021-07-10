@@ -4,30 +4,25 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.text.Layout;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskapp.R;
 import com.example.taskapp.adapters.TaskAdapter;
+import com.example.taskapp.callbacks.TaskSwipeDeleteCallback;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
 import com.example.taskapp.feedEntries.TaskContract;
 import com.example.taskapp.models.TaskModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class DashboardFragment extends Fragment {
 
@@ -38,6 +33,7 @@ public class DashboardFragment extends Fragment {
 
     private TaskDbHelper taskDbHelper;
     private SQLiteDatabase writableDatabase;
+    private ItemTouchHelper taskItemTouchHelper;
 
     private List<TaskModel> tasks = new ArrayList<TaskModel>();
 
@@ -49,19 +45,19 @@ public class DashboardFragment extends Fragment {
 
         initializeComponents();
         initDatabase();
-
-        initializeRecyclerView();
-
         loadAllTasks();
 
-        TaskAdapter taskAdapter = new TaskAdapter(tasks);
-        dashboard_recyclerView.setAdapter(taskAdapter);
-        dashboard_recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        setupRecyclerView();
+
         return root;
     }
 
-    private void initializeRecyclerView() {
-
+    private void setupRecyclerView() {
+        TaskAdapter taskAdapter = new TaskAdapter(tasks, dashboard_recyclerView);
+        dashboard_recyclerView.setAdapter(taskAdapter);
+        dashboard_recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        taskItemTouchHelper = new ItemTouchHelper(new TaskSwipeDeleteCallback(taskAdapter, dashboard_recyclerView));
+        taskItemTouchHelper.attachToRecyclerView(dashboard_recyclerView);
     }
 
     private void initDatabase() {
@@ -94,10 +90,11 @@ public class DashboardFragment extends Fragment {
         );
 
         while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry._ID));
             String taskName = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
             String taskDate = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE));
             String taskTime = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME));
-            tasks.add(new TaskModel(taskName, taskDate, taskTime));
+            tasks.add(new TaskModel(id, taskName, taskDate, taskTime));
         }
         cursor.close();
     }

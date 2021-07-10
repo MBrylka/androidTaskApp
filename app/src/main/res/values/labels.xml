@@ -12,4 +12,6 @@
     <string name="add_promptOnAdd">Czy chcesz dodać to zdarzenie?</string>
     <string name="add_promptOnAddYes">Tak</string>
     <string name="add_promptOnAddNo">Nie</string>
+    <string name="dashboard_snackbar">Czy chcesz przywrócić rekord?</string>
+    <string name="dashboard_snackbar_undo">Przywróć</string>
 </resources>

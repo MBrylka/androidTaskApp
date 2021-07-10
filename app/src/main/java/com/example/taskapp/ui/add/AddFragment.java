@@ -88,17 +88,18 @@ public class AddFragment extends Fragment {
     }
 
     private void input_taskTimeOnClick() {
-        TimePickerDialog mTimePicker;
         int hour = 0;
         int minute = 0;
 
-        mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                input_taskTime.setText(selectedHour+":"+selectedMinute);
+                String txtHour = selectedHour < 10 ? "0" + selectedHour : "" + selectedHour;
+                String txtMinute = selectedMinute < 10 ? "0" + selectedMinute : "" + selectedMinute;
+                input_taskTime.setText(txtHour + ":" + txtMinute);
 
             }
-        }, hour, minute, true);//Yes 24 hour time
+        }, hour, minute, true);
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
@@ -157,10 +158,8 @@ public class AddFragment extends Fragment {
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time.toString());
 
         long newRowId = writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
-        Toast toast = Toast.makeText(getActivity(), "Dodano nowe zdarzenie "+newRowId, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getActivity(), "Dodano nowe zadanie.", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP, 0, 0);
-        View view = toast.getView();
-        view.setBackgroundColor(Color.GREEN);
         toast.show();
     }
 
