@@ -17,4 +17,5 @@
     <string name="dashboard_snackbar_undo">Przywróć</string>
     <string name="taskAdapter_removedToast">Usunięto zadanie</string>
     <string name="taskAdapter_undoToast">Przywrócono zadanie</string>
+    <string name="add_addedToast">Dodano zadanie</string>
 </resources>

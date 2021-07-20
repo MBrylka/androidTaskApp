@@ -24,6 +24,7 @@ import com.example.taskapp.feedEntries.TaskContract;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class AddFragment extends Fragment {
 
@@ -62,7 +63,7 @@ public class AddFragment extends Fragment {
     private void addRadioButtons() {
         for(NotificationTypeEnum type : NotificationTypeEnum.values()) {
             RadioButton rb = new RadioButton(root.getContext());
-            //rb.setEnabled(false);
+            rb.setEnabled(false);
             rb.setText(type.toString());
             radioGroup_addNotificationType.addView(rb);
         }
@@ -79,25 +80,30 @@ public class AddFragment extends Fragment {
     }
 
     private void setListeners() {
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_addOnClick();
-            }
-        });
-        input_taskTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                input_taskTimeOnClick();
-            }
-        });
+        btn_add.setOnClickListener(v -> btn_addOnClick());
+        input_taskTime.setOnClickListener(v -> input_taskTimeOnClick());
+        input_taskDate.setOnDateChangeListener((view, year, month, dayOfMonth) -> input_taskDateOnDateChangeListener(year, month, dayOfMonth));
+        switch_addNotify.setOnCheckedChangeListener((buttonView, isChecked) -> switch_addNotifyOnCheckedChangeListener(buttonView, isChecked));
+    }
 
-        input_taskDate.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                input_taskDateOnDateChangeListener(year, month, dayOfMonth);
+    private void switch_addNotifyOnCheckedChangeListener(CompoundButton buttonView, boolean isChecked) {
+        if(buttonView.isChecked()) {
+
+            setRadioButtonsEnabled(true);
+        } else {
+            setRadioButtonsEnabled(false);
+        }
+
+    }
+
+    private void setRadioButtonsEnabled(boolean enabled) {
+        int count = radioGroup_addNotificationType.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View o = radioGroup_addNotificationType.getChildAt(i);
+            if(o instanceof RadioButton) {
+                o.setEnabled(enabled);
             }
-        });
+        }
     }
 
     private void input_taskDateOnDateChangeListener(int year, int month, int dayOfMonth) {
@@ -108,15 +114,12 @@ public class AddFragment extends Fragment {
         int hour = 0;
         int minute = 0;
 
-        TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                String txtHour = selectedHour < 10 ? "0" + selectedHour : "" + selectedHour;
-                String txtMinute = selectedMinute < 10 ? "0" + selectedMinute : "" + selectedMinute;
-                input_taskTime.setText(txtHour + ":" + txtMinute);
-
-            }
+        TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
+            String txtHour = selectedHour < 10 ? "0" + selectedHour : "" + selectedHour;
+            String txtMinute = selectedMinute < 10 ? "0" + selectedMinute : "" + selectedMinute;
+            input_taskTime.setText(txtHour + ":" + txtMinute);
         }, hour, minute, true);
+
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
@@ -138,21 +141,14 @@ public class AddFragment extends Fragment {
 
             dialogBuilder.setPositiveButton(
                     R.string.add_promptOnAddYes,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                           saveTask();
-                           dialog.cancel();
-                        }
+                    (dialog, id) -> {
+                       saveTask();
+                       dialog.cancel();
                     });
 
             dialogBuilder.setNegativeButton(
                     R.string.add_promptOnAddNo,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-
-                            dialog.cancel();
-                        }
-                    });
+                    (dialog, id) -> dialog.cancel());
 
             AlertDialog alertDialog = dialogBuilder.create();
             alertDialog.show();
@@ -169,15 +165,19 @@ public class AddFragment extends Fragment {
 
         Time time = new Time(hour, minute, 0);
 
+        boolean notify = switch_addNotify.isChecked();
+        int checkedRadioButtonId = radioGroup_addNotificationType.getCheckedRadioButtonId();
+        NotificationTypeEnum notificationType = NotificationTypeEnum.values()[checkedRadioButtonId];
+
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME, taskName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE, datetime.toString());
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time.toString());
-        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, 0);
-        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY, 0);
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, String.valueOf(notificationType));
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY, notify);
 
         long newRowId = writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
-        Toast toast = Toast.makeText(getActivity(), "Dodano nowe zadanie.", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getActivity(), R.string.add_addedToast, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }
