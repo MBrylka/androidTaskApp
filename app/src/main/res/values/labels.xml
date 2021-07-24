@@ -18,4 +18,6 @@
     <string name="taskAdapter_removedToast">Usunięto zadanie</string>
     <string name="taskAdapter_undoToast">Przywrócono zadanie</string>
     <string name="add_addedToast">Dodano zadanie</string>
+    <string name="edit_saveButton">Zapisz zmiany</string>
+    <string name="edit_cancelButton">Anuluj</string>
 </resources>

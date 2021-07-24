@@ -1,24 +1,30 @@
 package com.example.taskapp.adapters;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.taskapp.MainActivity;
 import com.example.taskapp.R;
 import com.example.taskapp.dbHelpers.TaskDbHelper;
+import com.example.taskapp.editActivity;
 import com.example.taskapp.enums.NotificationTypeEnum;
 import com.example.taskapp.feedEntries.TaskContract;
 import com.example.taskapp.models.TaskModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+
+import static androidx.core.content.ContextCompat.startActivity;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private final RecyclerView recyclerView;
@@ -31,17 +37,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView task_Name;
         private final TextView task_Date;
         private final TextView task_Time;
-
+        private final Button editButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             task_Name = (TextView) itemView.findViewById(R.id.dashboard_item_taskName);
             task_Date = (TextView) itemView.findViewById(R.id.dashboard_item_taskDate);
             task_Time = (TextView) itemView.findViewById(R.id.dashboard_item_taskTime);
+            editButton = itemView.findViewById(R.id.dashboard_item_editButton);
+            editButton.setOnClickListener(v -> saveButtonOnClickListener(itemView));
+        }
+
+        private void saveButtonOnClickListener(View v) {
+            Toast.makeText(v.getContext(), "ClickedItem: "+getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(v.getContext(), editActivity.class);
+
+            startActivity(v.getContext(), intent, null);
         }
 
         public TextView getTask_NameView() {
@@ -55,6 +70,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public TextView getTask_TimeView() {
             return task_Time;
         }
+
     }
 
     public TaskAdapter(List<TaskModel> dataSet, RecyclerView rv) {

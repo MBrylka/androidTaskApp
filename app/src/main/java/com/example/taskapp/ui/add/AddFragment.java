@@ -3,7 +3,6 @@ package com.example.taskapp.ui.add;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.icu.util.Calendar;
@@ -24,7 +23,6 @@ import com.example.taskapp.feedEntries.TaskContract;
 
 import java.sql.Time;
 import java.sql.Date;
-import java.util.ArrayList;
 
 public class AddFragment extends Fragment {
 
@@ -70,12 +68,12 @@ public class AddFragment extends Fragment {
     }
 
     private void initializeComponents() {
-        btn_add = root.findViewById(R.id.btn_add);
-        input_taskName = root.findViewById(R.id.input_taskName);
-        input_taskDate = root.findViewById(R.id.calendar_taskDate);
+        btn_add = root.findViewById(R.id.btn_saveEdit);
+        input_taskName = root.findViewById(R.id.input_editTaskName);
+        input_taskDate = root.findViewById(R.id.calendar_editTaskDate);
         input_taskTime = root.findViewById(R.id.input_taskTime);
-        switch_addNotify = root.findViewById(R.id.switch_addNotify);
-        radioGroup_addNotificationType = root.findViewById(R.id.radioGroup_addNotificationType);
+        switch_addNotify = root.findViewById(R.id.switch_editNotify);
+        radioGroup_addNotificationType = root.findViewById(R.id.radioGroup_editNotificationType);
 
     }
 
