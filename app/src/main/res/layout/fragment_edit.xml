@@ -39,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:id="@+id/input_taskTime"
+                android:id="@+id/input_editTaskTime"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="@dimen/elementsSpace"
                 android:layout_marginStart="@dimen/elementsSpace"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content" android:id="@+id/label_addDate"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="@dimen/elementsSpace" android:layout_marginStart="@dimen/elementsSpace"
-                app:layout_constraintTop_toBottomOf="@+id/input_taskTime"
+                app:layout_constraintTop_toBottomOf="@+id/input_editTaskTime"
                 android:layout_marginTop="@dimen/elementsSpace"/>
         <CalendarView
                 android:layout_width="0dp"

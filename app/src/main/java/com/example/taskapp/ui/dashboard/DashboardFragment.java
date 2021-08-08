@@ -1,5 +1,6 @@
 package com.example.taskapp.ui.dashboard;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -37,6 +39,7 @@ public class DashboardFragment extends Fragment {
     private ItemTouchHelper taskItemTouchHelper;
 
     private List<TaskModel> tasks = new ArrayList<TaskModel>();
+    private TaskAdapter taskAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        TaskAdapter taskAdapter = new TaskAdapter(tasks, dashboard_recyclerView);
+        taskAdapter = new TaskAdapter(tasks, dashboard_recyclerView);
         dashboard_recyclerView.setAdapter(taskAdapter);
         dashboard_recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         taskItemTouchHelper = new ItemTouchHelper(new TaskSwipeDeleteCallback(taskAdapter, dashboard_recyclerView));
@@ -97,9 +100,9 @@ public class DashboardFragment extends Fragment {
             String taskName = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
             String taskDate = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE));
             String taskTime = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME));
-            int notificationType = cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE));
+            String notificationType = cursor.getString(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE));
             boolean notify = 1 == cursor.getInt(cursor.getColumnIndexOrThrow(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY));
-            tasks.add(new TaskModel(id, taskName, taskDate, taskTime, NotificationTypeEnum.MIN30, notify));
+            tasks.add(new TaskModel(id, taskName, taskDate, taskTime, NotificationTypeEnum.get(notificationType), notify));
         }
         cursor.close();
     }

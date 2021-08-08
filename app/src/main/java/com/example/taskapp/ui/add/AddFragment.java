@@ -3,6 +3,7 @@ package com.example.taskapp.ui.add;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.icu.util.Calendar;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.taskapp.R;
@@ -59,10 +61,12 @@ public class AddFragment extends Fragment {
     }
 
     private void addRadioButtons() {
-        for(NotificationTypeEnum type : NotificationTypeEnum.values()) {
+        NotificationTypeEnum[] enumConstants = NotificationTypeEnum.class.getEnumConstants();
+        for(int i =0; i < enumConstants.length; i++) {
             RadioButton rb = new RadioButton(root.getContext());
             rb.setEnabled(false);
-            rb.setText(type.toString());
+            rb.setText(enumConstants[i].toString());
+            rb.setId(i);
             radioGroup_addNotificationType.addView(rb);
         }
     }
@@ -71,7 +75,8 @@ public class AddFragment extends Fragment {
         btn_add = root.findViewById(R.id.btn_saveEdit);
         input_taskName = root.findViewById(R.id.input_editTaskName);
         input_taskDate = root.findViewById(R.id.calendar_editTaskDate);
-        input_taskTime = root.findViewById(R.id.input_taskTime);
+        input_selectedDate = new GregorianCalendar();
+        input_taskTime = root.findViewById(R.id.input_editTaskTime);
         switch_addNotify = root.findViewById(R.id.switch_editNotify);
         radioGroup_addNotificationType = root.findViewById(R.id.radioGroup_editNotificationType);
 
@@ -85,13 +90,7 @@ public class AddFragment extends Fragment {
     }
 
     private void switch_addNotifyOnCheckedChangeListener(CompoundButton buttonView, boolean isChecked) {
-        if(buttonView.isChecked()) {
-
-            setRadioButtonsEnabled(true);
-        } else {
-            setRadioButtonsEnabled(false);
-        }
-
+        setRadioButtonsEnabled(buttonView.isChecked());
     }
 
     private void setRadioButtonsEnabled(boolean enabled) {
@@ -115,7 +114,7 @@ public class AddFragment extends Fragment {
         TimePickerDialog mTimePicker = new TimePickerDialog(getContext(), (timePicker, selectedHour, selectedMinute) -> {
             String txtHour = selectedHour < 10 ? "0" + selectedHour : "" + selectedHour;
             String txtMinute = selectedMinute < 10 ? "0" + selectedMinute : "" + selectedMinute;
-            input_taskTime.setText(txtHour + ":" + txtMinute);
+            input_taskTime.setText(txtHour + ":" + txtMinute + ":00");
         }, hour, minute, true);
 
         mTimePicker.setTitle("Select Time");
@@ -126,7 +125,7 @@ public class AddFragment extends Fragment {
 
         String taskName = input_taskName.getText().toString();
         String timeString = input_taskTime.getText().toString();
-        if(taskName.isEmpty() || timeString.isEmpty()) {
+        if(taskName.isEmpty() || timeString.isEmpty() || (switch_addNotify.isChecked() && radioGroup_addNotificationType.getCheckedRadioButtonId()==-1)) {
             Toast toast = Toast.makeText(getActivity(), "Nazwa i godzina są wymagane", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 0);
             View view = toast.getView();
@@ -164,14 +163,21 @@ public class AddFragment extends Fragment {
         Time time = new Time(hour, minute, 0);
 
         boolean notify = switch_addNotify.isChecked();
-        int checkedRadioButtonId = radioGroup_addNotificationType.getCheckedRadioButtonId();
-        NotificationTypeEnum notificationType = NotificationTypeEnum.values()[checkedRadioButtonId];
+        int checkedRadioButtonId = 0;
+        NotificationTypeEnum notificationType = NotificationTypeEnum.MIN30;
+        if(notify) {
+            checkedRadioButtonId = radioGroup_addNotificationType.getCheckedRadioButtonId();
+            int length = NotificationTypeEnum.values().length;
+            if(checkedRadioButtonId > length)
+                checkedRadioButtonId = 1;
+            notificationType = NotificationTypeEnum.values()[checkedRadioButtonId];
+        }
 
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME, taskName);
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_DATE, datetime.toString());
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_TIME, time.toString());
-        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, String.valueOf(notificationType));
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFICATION_TYPE, notificationType.toString());
         values.put(TaskContract.TaskEntry.COLUMN_NAME_TASK_NOTIFY, notify);
 
         long newRowId = writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
@@ -179,6 +185,5 @@ public class AddFragment extends Fragment {
         toast.setGravity(Gravity.TOP, 0, 0);
         toast.show();
     }
-
 
 }

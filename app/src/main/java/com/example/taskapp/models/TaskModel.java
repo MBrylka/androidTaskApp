@@ -44,4 +44,24 @@ public class TaskModel {
     public boolean getNotify() {
         return notify;
     }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setTaskDate(String taskDate) {
+        this.taskDate = taskDate;
+    }
+
+    public void setTaskTime(String taskTime) {
+        this.taskTime = taskTime;
+    }
+
+    public void setNotificationType(NotificationTypeEnum notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
+    }
 }
