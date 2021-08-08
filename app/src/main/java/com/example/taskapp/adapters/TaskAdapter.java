@@ -150,7 +150,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         private void checkNotificationType(TaskModel taskModel, View v) {
             NotificationTypeEnum notificationType = taskModel.getNotificationType();
-            Toast.makeText(v.getContext(), ""+notificationType, Toast.LENGTH_SHORT).show();
             int id = notificationType.ordinal();
             radioGroup_editNotificationType.check(id);
         }
